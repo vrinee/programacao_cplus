@@ -7,9 +7,16 @@ int main(){
         public:
             string nome;
             int matricula;
-            float nota1;
-            float nota2;
-            float nota3;
+
+            void setNota1(float _nota1){
+                nota1 = _nota1;
+            }
+            void setNota2(float _nota2){
+                nota2 = _nota2;
+            }
+            void setNota3(float _nota3){
+                nota3 = _nota3;
+            }
             float media(){
                 return (nota1 + nota2 + nota3) / 3;
             }
@@ -20,18 +27,27 @@ int main(){
                     cout << "Reprovado" << endl;
                 }
             }
+        private:
+            float nota1;
+            float nota2;
+            float nota3;
+
     };
     aluno a;
+    float x,y,z;
     cout << "Digite o nome do aluno: ";
     cin >> a.nome;
     cout << "Digite a matricula do aluno: ";
     cin >> a.matricula;
     cout << "Digite a primeira nota: ";
-    cin >> a.nota1;
+    cin >> x;
     cout << "Digite a segunda nota: ";
-    cin >> a.nota2;
+    cin >> y;
     cout << "Digite a terceira nota: ";
-    cin >> a.nota3;
+    cin >> z;
+    a.setNota1(x);
+    a.setNota2(y);
+    a.setNota3(z);
     cout << "Media: " << a.media() << endl;
     a.situacao();    
 }

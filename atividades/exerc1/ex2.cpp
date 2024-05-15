@@ -7,16 +7,27 @@ int main (){
         public:
             int conta;
             string nome;
-            float saldo;
+            
+            void setSaldo(float _saldo){
+                saldo = _saldo;
+            }
+
+            void getSaldo(){
+                cout << "Saldo: " << saldo << endl;
+            }
+
             void deposito(float valor){
                 saldo += valor;
             }
             void saque(float valor){
                 saldo -= valor;
             }
+        private:
+            float saldo;
     };
     float deposito;
     float saque;
+    float x;
 
     contaBancaria n1;
     
@@ -25,7 +36,8 @@ int main (){
     cout << "Digite o nome do titular: ";
     cin >> n1.nome;
     cout << "Digite o saldo inicial: ";
-    cin >> n1.saldo;
+    cin >> x;
+    n1.setSaldo(x);
     cout << "Digite o valor do deposito: ";
     
     cin >> deposito;
@@ -34,6 +46,6 @@ int main (){
 
     cin >> saque;
     n1.saque(saque);
-    cout << "Saldo final: " << n1.saldo << endl;
+    n1.getSaldo();
 
 }
