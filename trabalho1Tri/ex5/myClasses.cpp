@@ -327,6 +327,7 @@ class chamada{
         }
 
         //terminar gets e sets, fazer checagem de multa, devolver livro
+// mudar os constructor pra new()
     private:
         int dtaEmprestimo[3];
         int idLivro;
