@@ -40,6 +40,46 @@ void adicionarDias(int dtaInicial[3], int dias, int (*dtaFinal)[3]){
     *dtaFinal[2] = ano;
 }
 
+int diasAte(int dtaInicial[3], int dtaFinal[3]){
+    int diaInicial = dtaInicial[0];
+    int mesInicial = dtaInicial[1];
+    int anoInicial = dtaInicial[2];
+    int diaFinal = dtaFinal[0];
+    int mesFinal = dtaFinal[1];
+    int anoFinal = dtaFinal[2];
+    int dias = 0;
+
+    while(diaInicial or diaFinal or mesInicial != mesFinal or anoInicial != anoFinal){
+        diaInicial++;
+        dias++;
+        if(diaInicial > 31 and (mesInicial == 1 or mesInicial == 3 or mesInicial == 5 or mesInicial == 7 or mesInicial == 8 or mesInicial == 10)){
+            diaInicial = 1;
+            mesInicial++;
+        }else if(diaInicial > 30 and (mesInicial == 4 || mesInicial == 6 || mesInicial == 9 || mesInicial == 11)){
+            diaInicial = 1;
+            mesInicial++;
+        }else if(mesInicial == 2){
+            if(anoInicial % 4 == 0){
+                if(diaInicial > 29){
+                    diaInicial = 1;
+                    mesInicial++;
+                }
+            }else{
+                if(diaInicial > 28){
+                    diaInicial = 1;
+                    mesInicial++;
+                }
+            }
+        }else if(diaInicial > 31 and mesInicial == 12){
+            diaInicial = 1;
+            mesInicial = 1;
+            anoInicial++;
+        }
+    }
+
+    return dias;
+
+}
 
 class livro{
     public:
@@ -68,6 +108,10 @@ class livro{
             exemplares++;
         }
 
+        int getExemplares(){
+            return exemplares;
+        }
+
         void deletarExemplar(){
             exemplares--;
         }
@@ -80,12 +124,23 @@ class livro{
             }
         }
 
+        void setId(vector<livro> &livros){
+            for (int i = 0; i < livros.size(); i++){
+                if(livros.at(i).getIsbn() == isbn){
+                    id = i;
+                }
+            }
+        }
         
+        int getId(){
+            return id;
+        }
     
     private:
         string publicacao;
         string isbn;
         int exemplares;
+        int id;
 
 };
 class usuario{
@@ -142,21 +197,14 @@ class usuario{
             telefone = _telefone;
         }
 
-        float getMulta(){
+        float getMulta(vector<chamada> &chamadas){
+            checarMulta(chamadas);
             return multa;
         }
 
         bool getStatus(){
             checarStatus();
             return status;
-        }
-
-        
-
-
-
-        void pagarMulta(float valor){
-            multa -= valor;
         }
 
         void checarStatus(){
@@ -167,8 +215,101 @@ class usuario{
             }
         }
 
+        void setId(vector<usuario> &usuarios){
+            for (int i = 0; i < usuarios.size(); i++){
+                if(usuarios.at(i).getEmail() == email){
+                    id = i;
+                }
+            }
+        }
 
-    
+        int getId(){
+            return id;
+        }
+
+        int getEmprestimos(){
+            return emprestimos;
+        }
+
+        void addEmprestimo(){
+            emprestimos++;
+        }
+
+        void checarMulta(vector<chamada> &chamadas){
+            int dtaAtual[3];
+            int timesRan = 0;
+            cout << "Digite o dia atual: ";
+            cin >> dtaAtual[0];
+            cout << "Digite o mes atual: ";
+            cin >> dtaAtual[1];
+            cout << "Digite o ano atual: ";
+            cin >> dtaAtual[2];
+            while(timesRan < emprestimos){
+                for (int i = 0; i < chamadas.size(); i++){
+                    if(chamadas.at(i).getIdUsuario() == id) {
+                        if(chamadas.at(i).getAtrasado()){
+                            int dias = diasAte(chamadas.at(i).getDtaVenc(), dtaAtual);
+
+                            if(dias > 0){
+                                multa += dias * 2;
+                                chamadas.at(i).setAtrasado();
+                            }
+                        }
+                        timesRan++; 
+                    }
+                }
+
+            }
+        }
+
+        void pagarMulta(float valor, vector<chamada> &chamadas){
+            checarMulta(chamadas);
+            multa -= valor;
+        }
+
+        void devolverLivro(vector<chamada> &chamadas, vector<livro> &livros){
+            string titulo;
+            int diaAtual[3];
+            int idLivro;
+            int op;
+            cout << "Digite o dia atual: ";
+            cin >> diaAtual[0];
+            cout << "Digite o mes atual: ";
+            cin >> diaAtual[1];
+            cout << "Digite o ano atual: ";
+            cin >> diaAtual[2];
+            cout << "Digite o titulo do livro que deseja devolver: ";
+            cin >> titulo;
+            for(int i = 0; i < livros.size(); i++){
+                if(livros.at(i).titulo == titulo){
+                    idLivro = i;
+                    break;
+                }
+            }
+            cout << "Livro nao encontrado!" << endl;
+            cout << "Tentar novamente?(1 - sim 0 - nao)" << endl;
+            cin >> op;
+            if(op == 1){
+                devolverLivro(chamadas, livros);
+                return;
+            }
+
+            for(int i = 0; i < chamadas.size(); i++){
+                if(chamadas.at(i).getIdUsuario() == id and chamadas.at(i).getIdLivro() == idLivro){
+                    chamadas.at(i).setStatus();
+                    int dias = diasAte(chamadas.at(i).getDtaVenc(), diaAtual);
+                    if(dias > 0 and  chamadas.at(i).getAtrasado() == false){
+                        multa += dias * 2;
+                        chamadas.at(i).setAtrasado();
+                    }
+                    livros.at(idLivro).novoExemplar();
+                    cout << "Livro devolvido com sucesso!" << endl;
+                    return;
+                }
+            }
+
+        }
+
     private:
         string senha;
         int dtaNascimento[3];
@@ -176,6 +317,8 @@ class usuario{
         string telefone;
         float multa;
         bool status;
+        int id;
+        int emprestimos = 0;
 
 };
 class admin{
@@ -217,6 +360,7 @@ class admin{
 
         void deletarUsuario(vector<usuario> &usuarios){
             string nome;
+            int op;
             cout << "Digite o nome do usuario que deseja deletar: ";
             cin >> nome;
             for(int i = 0; i < usuarios.size(); i++){
@@ -227,6 +371,12 @@ class admin{
                 }
             }
             cout << "Usuario nao encontrado!" << endl;
+            cout << "Tentar novamente?(1 - sim 0 - nao)" << endl;
+            cin >> op;
+            if(op == 1){
+                deletarUsuario(usuarios);
+            }
+
         }
 
         livro novoLivro(){
@@ -251,6 +401,7 @@ class admin{
 
         void deletarLivro(vector<livro> &livros){
             string titulo;
+            int op;
             cout << "Digite o titulo do livro que deseja deletar: ";
             cin >> titulo;
             for(int i = 0; i < livros.size(); i++){
@@ -261,11 +412,17 @@ class admin{
                 }
             }
             cout << "Livro nao encontrado!" << endl;
+            cout << "Tentar novamente?(1 - sim 0 - nao)" << endl;
+            cin >> op;
+            if(op == 1){
+                deletarLivro(livros);
+            }
         }
 
         chamada novoEmprestimo(vector<livro> &livros, vector<usuario> &usuarios){
             string titulo;
             string nome;
+            int op;
             int dtaEmprestimo[3];
             cout << "Digite o titulo do livro que deseja emprestar: ";
             cin >> titulo;
@@ -285,6 +442,7 @@ class admin{
                                 cin >> dtaEmprestimo[2];
                                 livros.at(i).deletarExemplar();
                                 chamada call(dtaEmprestimo,i,j);
+                                usuarios.at(j).addEmprestimo();
                                 return call;
                             }else{
                                 cout << "Livro nao disponivel!" << endl;
@@ -293,19 +451,27 @@ class admin{
                         }
                     }
                     cout << "Usuario nao encontrado!" << endl;
+                    cout << "Tentar novamente?(1 - sim 0 - nao)" << endl;
+                    cin >> op;
+                    if(op == 1){
+                        novoEmprestimo(livros, usuarios);
+                    }
                     return;
                 }
             }
             cout << "Livro nao encontrado!" << endl;
+            cout << "Tentar novamente?(1 - sim 0 - nao)" << endl;
+            cin >> op;
+            if(op == 1){
+                novoEmprestimo(livros, usuarios);
+            }
         }
-
 
     private:
         string senha;
 };
 class chamada{
     public:
-        int dtaVenc[3];
         
         chamada(int _dtaEmprestimo[3], int _idLivro, int _idUsuario){
             dtaEmprestimo[0] = _dtaEmprestimo[0];
@@ -315,27 +481,74 @@ class chamada{
             idLivro = _idLivro;
             idUsuario = _idUsuario;
             status = true;
+            atrasado = false;
+        }
+
+        int *getDtaVenc(){
+            return dtaVenc;
+        }
+
+        void setDtaVenc(int &_dtaVenc){
+            *dtaVenc = _dtaVenc;
         }
 
         int *getDtaEmprestimo(){
             return dtaEmprestimo;
         }
 
-        void plchldr(){
-            int* dtaAtual = getDtaEmprestimo();
+        int getIdLivro(){
+            return idLivro;
+        }
 
+        int getIdUsuario(){
+            return idUsuario;
+        }
+
+        bool getStatus(){
+            return status;
+        }
+
+        void setStatus(){
+            if(status){
+                status = false;
+            }else{
+                status = true;
+            }
+        }
+
+        bool getAtrasado(){
+            return atrasado;
+        }
+
+        void setAtrasado(){
+            if (atrasado){
+                atrasado = false;
+            }else{
+                atrasado = true;
+            }
+        }
+
+        int getId(){
+            return id;
+        }
+
+        void setId(vector<chamada> &chamadas){
+            for (int i = 0; i < chamadas.size(); i++){
+                if(chamadas.at(i).getIdLivro() == idLivro and chamadas.at(i).getIdUsuario() == idUsuario and dtaEmprestimo == chamadas.at(i).getDtaEmprestimo()){
+                    id = i;
+                }
+            }
         }
 
         //terminar gets e sets, fazer checagem de multa, devolver livro
     private:
+        int dtaVenc[3];
         int dtaEmprestimo[3];
         int idLivro;
         int idUsuario;
         bool status;
+        bool atrasado;
+        int id;
 
 
 };
-/*usuarios.push_back(adm.cadastrarUsuario());
-usuarios.at(0); // Nome = Jorge
-usuarios.push_back(adm.cadastrarUsuario());
-usuarios.at(1); // Nome = Joao */   
