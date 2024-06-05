@@ -146,6 +146,7 @@ admin createAdmin(){
 // Fim das funções de listagem
 
 // Funções de ação
+
     void pagamento(usuario &user, vector<chamada> &chamadas){
         float multa = user.getMulta(chamadas);
         if (multa == 0){
@@ -224,5 +225,52 @@ admin createAdmin(){
                     mudarAtributosUser(user);
                 }
                 break;
+        }
+    }
+
+    void retirarExemplar(livro &book){
+        book.deletarExemplar();
+    }
+
+    void checarMulta(vector<chamada> &chamadas, usuario &user){
+        float multa = user.getMulta(chamadas);
+        if (multa == 0){
+            cout << "Não há multas a serem pagas." << endl;
+        }else{
+            cout << "O valor da multa é de: " << multa << endl;
+        }
+    }
+
+    void userActions(vector<usuario> &usuarios, vector<livro> &livros, vector<chamada> &chamadas){
+        int op;
+        int userIndex = loginUser(usuarios);
+        bool running = true;
+        while(running){
+            cout << "1 - Devolver livro" << endl;
+            cout << "2 - Pagar multa" << endl;
+            cout << "3 - Checar multa" << endl;
+            cout << "4 - Mudar atributos" << endl;
+            cout << "5 - Sair" << endl;
+            cin >> op;
+            switch (op){
+                case 1:
+                    devolucao(usuarios[userIndex], livros, chamadas);
+                    break;
+                case 2:
+                    pagamento(usuarios[userIndex], chamadas);
+                    break;
+                case 3:
+                    checarMulta(chamadas, usuarios[userIndex]);
+                    break;
+                case 4:
+                    mudarAtributosUser(usuarios[userIndex]);
+                    break;
+                case 5:
+                    running = false;
+                    break;
+                default:
+                    cout << "Opção invalida." << endl;
+                    break;
+            }
         }
     }
