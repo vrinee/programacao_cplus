@@ -1,10 +1,10 @@
 #include <iostream>
 #include <vector>
-#include "chamada.hpp"
+#include "Chamada.hpp"
 #include "classFunc.hpp"
 
 
-chamada::chamada(int _dtaEmprestimo[3], int _idLivro, int _idUsuario){
+Chamada::Chamada(int _dtaEmprestimo[3], int _idLivro, int _idUsuario){
     dtaEmprestimo[0] = _dtaEmprestimo[0];
     dtaEmprestimo[1] = _dtaEmprestimo[1];
     dtaEmprestimo[2] = _dtaEmprestimo[2];
@@ -15,31 +15,31 @@ chamada::chamada(int _dtaEmprestimo[3], int _idLivro, int _idUsuario){
     atrasado = false;
 }
 
-int* chamada::getDtaVenc(){
+int* Chamada::getDtaVenc(){
     return dtaVenc;
 }
 
-void chamada::setDtaVenc(int &_dtaVenc){
+void Chamada::setDtaVenc(int &_dtaVenc){
     *dtaVenc = _dtaVenc;
 }
 
-int* chamada::getDtaEmprestimo(){
+int* Chamada::getDtaEmprestimo(){
     return dtaEmprestimo;
 }
 
-int chamada::getIdLivro(){
+int Chamada::getIdLivro(){
     return idLivro;
 }
 
-int chamada::getIdUsuario(){
+int Chamada::getIdUsuario(){
     return idUsuario;
 }
 
-bool chamada::getStatus(){
+bool Chamada::getStatus(){
     return status;
 }
 
-void chamada::setStatus(){
+void Chamada::setStatus(){
     if (status)
     {
         status = false;
@@ -50,11 +50,11 @@ void chamada::setStatus(){
     }
 }
 
-bool chamada::getAtrasado(){
+bool Chamada::getAtrasado(){
     return atrasado;
 }
 
-void chamada::setAtrasado(){
+void Chamada::setAtrasado(){
     if (atrasado)
     {
         atrasado = false;
@@ -65,14 +65,14 @@ void chamada::setAtrasado(){
     }
 }
 
-int chamada::getId(){
+int Chamada::getId(){
     return id;
 }
 
-void chamada::setId(vector<chamada> &chamadas){
-    for (int i = 0; i < chamadas.size(); i++)
+void Chamada::setId(vector<Chamada> &Chamadas){
+    for (int i = 0; i < Chamadas.size(); i++)
     {
-        if (chamadas.at(i).getIdLivro() == idLivro and chamadas.at(i).getIdUsuario() == idUsuario and dtaEmprestimo == chamadas.at(i).getDtaEmprestimo())
+        if (Chamadas.at(i).getIdLivro() == idLivro and Chamadas.at(i).getIdUsuario() == idUsuario and dtaEmprestimo == Chamadas.at(i).getDtaEmprestimo())
         {
             id = i;
         }

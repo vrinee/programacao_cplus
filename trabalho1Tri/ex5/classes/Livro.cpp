@@ -1,10 +1,10 @@
 #include <iostream>
 #include <vector>
-#include "livro.hpp"
+#include "Livro.hpp"
 
 using namespace std;
 
-livro::livro(string _titulo, string _autor, string _editora, string _publicacao, string _isbn){
+Livro::Livro(string _titulo, string _autor, string _editora, string _publicacao, string _isbn){
     titulo = _titulo;
     autor = _autor;
     editora = _editora;
@@ -14,27 +14,27 @@ livro::livro(string _titulo, string _autor, string _editora, string _publicacao,
     id = -1;
 }
 
-string livro::getPublicacao(){
+string Livro::getPublicacao(){
     return publicacao;
 }
 
-string livro::getIsbn(){
+string Livro::getIsbn(){
     return isbn;
 }
 
-void livro::novoExemplar(){
+void Livro::novoExemplar(){
     exemplares++;
 }
 
-int livro::getExemplares(){
+int Livro::getExemplares(){
     return exemplares;
 }
 
-void livro::deletarExemplar(){
+void Livro::deletarExemplar(){
     exemplares--;
 }
 
-bool livro::checarDisponibilidade(){
+bool Livro::checarDisponibilidade(){
     if(exemplares > 0){
         return true;
     }else{
@@ -42,14 +42,14 @@ bool livro::checarDisponibilidade(){
     }
 }
 
-void livro::setId(vector<livro> &livros){
-    for (int i = 0; i < livros.size(); i++){
-        if(livros.at(i).getIsbn() == isbn){
+void Livro::setId(vector<Livro> &Livros){
+    for (int i = 0; i < Livros.size(); i++){
+        if(Livros.at(i).getIsbn() == isbn){
             id = i;
         }
     }
 }
         
-int livro::getId(){
+int Livro::getId(){
     return id;
 }

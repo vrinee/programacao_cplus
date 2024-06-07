@@ -1,18 +1,16 @@
-#ifndef LIVRO_HPP
-#define LIVRO_HPP
 
 #include <iostream>
 #include <vector>
 
 using namespace std;
 
-class livro{
+class Livro{
     public:
         string titulo;
         string autor;
         string editora;
 
-        livro(string _titulo, string _autor, string _editora, string _publicacao, string _isbn);
+        Livro(string _titulo, string _autor, string _editora, string _publicacao, string _isbn);
 
         string getPublicacao();
 
@@ -27,7 +25,7 @@ class livro{
 
         bool checarDisponibilidade();
 
-        void setId(vector<livro> &livros);
+        void setId(vector<Livro> &Livros);
         
         int getId();
     
@@ -38,5 +36,3 @@ class livro{
         int id;
 
 };
-
-#endif

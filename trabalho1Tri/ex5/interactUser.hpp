@@ -1,53 +1,53 @@
 #include <iostream>
 #include <vector>
-#include "classes/admin.hpp"
-#include "classes/usuario.hpp"
-#include "classes/livro.hpp"
-#include "classes/chamada.hpp"
-#include "classes/classFunc.hpp"
+
+class Admin;
+class Usuario;
+class Livro;
+class Chamada;
 
 using namespace std;
 
-int loginAdmin(vector<admin> &admins);
+int loginAdmin(vector<Admin> &Admins);
 
-admin createAdmin();
+Admin createAdmin();
 
 // funções de criação
-    void createUser(vector<usuario> &usuarios, admin &admin);
+    void createUser(vector<Usuario> &Usuarios, Admin &Admin);
 
-    int loginUser(vector<usuario> &usuarios);
+    int loginUser(vector<Usuario> &Usuarios);
 
-    void createBook(vector<livro> &livros, admin &admin);
+    void createBook(vector<Livro> &Livros, Admin &Admin);
 
-    void createChamada(vector<chamada> &chamadas,vector<usuario> &usuarios, vector<livro> &livros, admin &admin);
+    void createChamada(vector<Chamada> &Chamadas,vector<Usuario> &Usuarios, vector<Livro> &Livros, Admin &Admin);
 // Fim das funções de criação
 
 // Funções de listagem
-    void listarUsuarios(vector<usuario> &usuarios);
+    void listarUsuarios(vector<Usuario> &Usuarios);
 
-    void listarAtributosUser(usuario user, vector<chamada> &chamadas);
+    void listarAtributosUser(Usuario user, vector<Chamada> &Chamadas);
 
-    void listarAdmins(vector<admin> &admins);
+    void listarAdmins(vector<Admin> &Admins);
 
-    void listarLivros(vector<livro> &livros);
+    void listarLivros(vector<Livro> &Livros);
 
-    void listarAtributosLivro(livro book);
+    void listarAtributosLivro(Livro book);
 
-    void listarChamadas(vector<chamada> &chamadas, vector<usuario> &usuarios, vector<livro> &livros);
+    void listarChamadas(vector<Chamada> &Chamadas, vector<Usuario> &Usuarios, vector<Livro> &Livros);
 
-    void listarAtributosChamada(chamada call, vector<usuario> &usuarios, vector<livro> &livros);
+    void listarAtributosChamada(Chamada call, vector<Usuario> &Usuarios, vector<Livro> &Livros);
 // Fim das funções de listagem
 
 // Funções de ação
 
-    void pagamento(usuario &user, vector<chamada> &chamadas);
+    void pagamento(Usuario &user, vector<Chamada> &Chamadas);
 
-    void devolucao(usuario &user, vector<livro> &livros, vector<chamada> &chamadas);
+    void devolucao(Usuario &user, vector<Livro> &Livros, vector<Chamada> &Chamadas);
 
-    void mudarAtributosUser(usuario &user);
+    void mudarAtributosUser(Usuario &user);
 
-    void retirarExemplar(livro &book);
+    void retirarExemplar(Livro &book);
 
-    void checarMulta(vector<chamada> &chamadas, usuario &user);
+    void checarMulta(vector<Chamada> &Chamadas, Usuario &user);
 
-    void userActions(vector<usuario> &usuarios, vector<livro> &livros, vector<chamada> &chamadas);
+    void userActions(vector<Usuario> &Usuarios, vector<Livro> &Livros, vector<Chamada> &Chamadas);

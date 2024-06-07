@@ -1,22 +1,24 @@
 #include <iostream>
 #include <vector>
-#include "classes/admin.hpp"
-#include "classes/usuario.hpp"
-#include "classes/livro.hpp"
-#include "classes/chamada.hpp"
+#include <string>
+#include "classes/Admin.hpp"
+#include "classes/Usuario.hpp"
+#include "classes/Livro.hpp"
+#include "classes/Chamada.hpp"
 #include "classes/classFunc.hpp"
 
 using namespace std;
 
-int loginAdmin(vector<admin> &admins){
+int loginAdmin(vector<Admin> &Admins){
     string name;
     string password;
-    cout << "Digite o nome do administrador: ";
-    cin >> name;
-    cout << "Digite a senha do administrador: ";
+    cout << "Digite o nome do Administrador: ";
+    getline(cin, name);
+    cout << "Digite a senha do Administrador: ";
     cin >> password;
-    for (int i = 0; i < admins.size(); i++){
-        if (admins[i].nome == name && admins[i].getSenha() == password){
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    for (int i = 0; i < Admins.size(); i++){
+        if (Admins[i].nome == name && Admins[i].getSenha() == password){
             return i;
         }
     }
@@ -24,39 +26,42 @@ int loginAdmin(vector<admin> &admins){
     cout << "Nome ou senha invalidos." << endl;
     cout << "Tentar novamente.(1 - sim 0 - não)" << endl;
     cin >> op;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     if (op == 1){
-        return loginAdmin(admins);
+        return loginAdmin(Admins);
     }
     return -1;
 
 }
 
-admin createAdmin(){
+Admin createAdmin(){
     string name;
     string password;
-    cout << "Digite o nome do administrador: ";
-    cin >> name;
-    cout << "Digite a senha do administrador: ";
+    cout << "Digite o nome do Administrador: ";
+    getline(cin, name);
+    cout << "Digite a senha do Administrador: ";
     cin >> password;
-    admin newAdmin(name, password);
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    Admin newAdmin(name, password);
     return newAdmin;
 }
 
 // funções de criação
-    void createUser(vector<usuario> &usuarios, admin &admin){
-        usuarios.push_back(admin.cadastrarUsuario());
-        usuarios[usuarios.size() - 1].setId(usuarios);   
+    void createUser(vector<Usuario> &Usuarios, Admin &Admin){
+        Usuarios.push_back(Admin.cadastrarUsuario());
+        Usuarios[Usuarios.size() - 1].setId(Usuarios);   
     }
 
-    int loginUser(vector<usuario> &usuarios){
+    int loginUser(vector<Usuario> &Usuarios){
         string email;
         string password;
-        cout << "Digite o email do usuario: ";
-        cin >> email;
-        cout << "Digite a senha do usuario: ";
+        cout << "Digite o email do Usuario: ";
+        getline(cin, email);
+        cout << "Digite a senha do Usuario: ";
         cin >> password;
-        for (int i = 0; i < usuarios.size(); i++){
-            if (usuarios[i].getEmail() == email && usuarios[i].getSenha() == password){
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        for (int i = 0; i < Usuarios.size(); i++){
+            if (Usuarios[i].getEmail() == email && Usuarios[i].getSenha() == password){
                 return i;
             }
         }
@@ -64,36 +69,91 @@ admin createAdmin(){
         cout << "Email ou senha invalidos." << endl;
         cout << "Tentar novamente.(1 - sim 0 - não)" << endl;
         cin >> op;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         if (op == 1){
-            return loginUser(usuarios);
+            return loginUser(Usuarios);
         }
         return -1;
     }
 
-    void createBook(vector<livro> &livros, admin &admin){
-        livros.push_back(admin.novoLivro());
-        livros[livros.size() - 1].setId(livros);
+    void createBook(vector<Livro> &Livros, Admin &Admin){
+        Livros.push_back(Admin.novoLivro());
+        Livros[Livros.size() - 1].setId(Livros);
     }
 
-    void createChamada(vector<chamada> &chamadas,vector<usuario> &usuarios, vector<livro> &livros, admin &admin){
-        chamadas.push_back(admin.novoEmprestimo(livros, usuarios));
+    void createChamada(vector<Chamada> &Chamadas,vector<Usuario> &Usuarios, vector<Livro> &Livros, Admin &Admin){
+        string titulo;
+        string nome;
+        int op;
+        cout << "Digite o titulo do Livro que deseja emprestar: ";
+        getline(cin, titulo);
+        cout << "Digite o nome do Usuario que deseja emprestar o Livro: ";
+        getline(cin, nome);
+        for (int i = 0; i < Livros.size(); i++)
+        {
+            if (Livros.at(i).titulo == titulo)
+            {
+                for (int j = 0; j < Usuarios.size(); j++)
+                {
+                    if (Usuarios.at(j).nome == nome)
+                    {
+                        if (Livros.at(i).checarDisponibilidade())
+                        {
+                            cout << "Livro disponivel!" << endl;
+                            Livros.at(i).deletarExemplar();
+                            Chamadas.push_back(Admin.novoEmprestimo(Livros, Usuarios, i, j));
+                            Usuarios.at(j).addEmprestimo();
+                            return;
+                        }
+                        else
+                        {
+                            cout << "Livro nao disponivel!" << endl;
+                            cout << "Tentar novamente?(1 - sim 0 - nao)" << endl;
+                            cin >> op;
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                            if (op == 1)
+                            {
+                                createChamada(Chamadas,Usuarios,Livros,Admin);
+                            }
+                        }
+                    }
+                }
+                cout << "Usuario nao encontrado!" << endl;
+                cout << "Tentar novamente?(1 - sim 0 - nao)" << endl;
+                cin >> op;
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                if (op == 1)
+                {
+                    createChamada(Chamadas, Usuarios, Livros, Admin);
+                }
+                return;
+            }
+        }
+        cout << "Livro nao encontrado!" << endl;
+        cout << "Tentar novamente?(1 - sim 0 - nao)" << endl;
+        cin >> op;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        if (op == 1)
+        {
+            createChamada(Chamadas, Usuarios, Livros, Admin);
+        }
     }
 // Fim das funções de criação
 
 // Funções de listagem
-    void listarUsuarios(vector<usuario> &usuarios){
-        for (int i = 0; i < usuarios.size(); i++){
-            cout << "ID: " << usuarios[i].getId() << " Nome: " << usuarios[i].nome << " Email: " << usuarios[i].getEmail() << endl;
+    void listarUsuarios(vector<Usuario> &Usuarios){
+        for (int i = 0; i < Usuarios.size(); i++){
+            cout << "ID: " << Usuarios[i].getId() << " Nome: " << Usuarios[i].nome << " Email: " << Usuarios[i].getEmail() << endl;
         }
     }
 
-    void listarAtributosUser(usuario user, vector<chamada> &chamadas){
+    void listarAtributosUser(Usuario user, vector<Chamada> &Chamadas){
         cout << "ID: " << user.getId() << endl;
         cout << "Nome: " << user.nome << endl;
         cout << "Email: " << user.getEmail() << endl;
         cout << "Data de nascimento: " << user.getDtaNascimento() << endl;
         cout << "Telefone: " << user.getTelefone() << endl;
-        cout << "Multas: " << user.getMulta(chamadas) << endl;
+        cout << "Multas: " << user.getMulta(Chamadas) << endl;
         if(user.getStatus() == 1){
             cout << "Status: Ativo" << endl;
         }else{
@@ -102,19 +162,19 @@ admin createAdmin(){
         cout << "Livros alugados: " << user.getEmprestimos() << endl;
     }
 
-    void listarAdmins(vector<admin> &admins){
-        for (int i = 0; i < admins.size(); i++){
-            cout << "Nome: " << admins[i].nome << endl;
+    void listarAdmins(vector<Admin> &Admins){
+        for (int i = 0; i < Admins.size(); i++){
+            cout << "Nome: " << Admins[i].nome << endl;
         }
     }
 
-    void listarLivros(vector<livro> &livros){
-        for (int i = 0; i < livros.size(); i++){
-            cout << "ID: " << livros[i].getId() << " Nome: " << livros[i].titulo << " Autor: " << livros[i].autor << " Isbn: " << livros[i].getIsbn() << endl;
+    void listarLivros(vector<Livro> &Livros){
+        for (int i = 0; i < Livros.size(); i++){
+            cout << "ID: " << Livros[i].getId() << " Nome: " << Livros[i].titulo << " Autor: " << Livros[i].autor << " Isbn: " << Livros[i].getIsbn() << endl;
         }
     }
 
-    void listarAtributosLivro(livro book){
+    void listarAtributosLivro(Livro book){
         cout << "ID: " << book.getId() << endl;
         cout << "Titulo: " << book.titulo << endl;
         cout << "Autor: " << book.autor << endl;
@@ -124,16 +184,16 @@ admin createAdmin(){
         cout << "Exemplares disponiveis: " << book.getExemplares() << endl;
     }
 
-    void listarChamadas(vector<chamada> &chamadas, vector<usuario> &usuarios, vector<livro> &livros){
-        for (int i = 0; i < chamadas.size(); i++){
-            cout << "ID:" << i << " Usuario: " << usuarios[chamadas[i].getIdUsuario()].nome << " Livro: " << livros[chamadas[i].getIdLivro()].titulo << " Data de emprestimo: " << chamadas[i].getDtaEmprestimo() << endl;
+    void listarChamadas(vector<Chamada> &Chamadas, vector<Usuario> &Usuarios, vector<Livro> &Livros){
+        for (int i = 0; i < Chamadas.size(); i++){
+            cout << "ID:" << i << " Usuario: " << Usuarios[Chamadas[i].getIdUsuario()].nome << " Livro: " << Livros[Chamadas[i].getIdLivro()].titulo << " Data de emprestimo: " << Chamadas[i].getDtaEmprestimo() << endl;
         }
     }
 
-    void listarAtributosChamada(chamada call, vector<usuario> &usuarios, vector<livro> &livros){
+    void listarAtributosChamada(Chamada call, vector<Usuario> &Usuarios, vector<Livro> &Livros){
         cout << "ID: " << call.getId() << endl;
-        cout << "Usuario: " << usuarios[call.getIdUsuario()].nome << endl;
-        cout << "Livro: " << livros[call.getIdLivro()].titulo << endl;
+        cout << "Usuario: " << Usuarios[call.getIdUsuario()].nome << endl;
+        cout << "Livro: " << Livros[call.getIdLivro()].titulo << endl;
         cout << "Data de emprestimo: " << call.getDtaEmprestimo() << endl;
         cout << "Data de vencimento: " << call.getDtaVenc() << endl;
         if (call.getStatus() == 1){
@@ -151,8 +211,8 @@ admin createAdmin(){
 
 // Funções de ação
 
-    void pagamento(usuario &user, vector<chamada> &chamadas){
-        float multa = user.getMulta(chamadas);
+    void pagamento(Usuario &user, vector<Chamada> &Chamadas){
+        float multa = user.getMulta(Chamadas);
         if (multa == 0){
             cout << "Não há multas a serem pagas." << endl;
             return;
@@ -161,26 +221,29 @@ admin createAdmin(){
         cout << "O valor da multa é de: " << multa << endl;
         cout << "Digite o valor a ser pago: ";
         cin >> valor;
-        user.pagarMulta(valor,chamadas);
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        user.pagarMulta(valor,Chamadas);
     }
 
-    void devolucao(usuario &user, vector<livro> &livros, vector<chamada> &chamadas){
+    void devolucao(Usuario &user, vector<Livro> &Livros, vector<Chamada> &Chamadas){
         int op;
         int qnt;
         cout << "Quantas devoluções deseja fazer?" << endl;
         cin >> qnt;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         for (int i = 0; i < qnt; i++){
-            user.devolverLivro(chamadas, livros);
+            user.devolverLivro(Chamadas, Livros);
         }
         cout << "Deseja pagar a multa?(1 - sim 0 - não)" << endl;
         cin >> op;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         if (op == 1){
-            pagamento(user, chamadas);
+            pagamento(user, Chamadas);
         }
 
     }
 
-    void mudarAtributosUser(usuario &user){
+    void mudarAtributosUser(Usuario &user){
         int op;
         int dta[3];
         string placeholder;
@@ -191,15 +254,16 @@ admin createAdmin(){
         cout << "4 - Telefone" << endl;
         cout << "5 - Senha" << endl;
         cin >> op;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         switch (op){
             case 1:
                 cout << "Digite o novo nome: ";
-                cin >> placeholder;
+                getline(cin, placeholder);
                 user.nome = placeholder;
                 break;
             case 2:
                 cout << "Digite o novo email: ";
-                cin >> placeholder;
+                getline(cin, placeholder);
                 user.setEmail(placeholder);
                 break;
             case 3:
@@ -209,22 +273,25 @@ admin createAdmin(){
                 cin >> dta[1];
                 cout << "Digite o ano de nascimento: ";
                 cin >> dta[2];
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 user.setDtaNascimento(dta);
                 break;
             case 4:
                 cout << "Digite o novo telefone: ";
-                cin >> placeholder;
+                getline(cin, placeholder);
                 user.setTelefone(placeholder);
                 break;
             case 5:
                 cout << "Digite a nova senha: ";
                 cin >> placeholder;
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 user.setSenha(placeholder);
                 break;
             default:
                 cout << "Opção invalida." << endl;
                 cout << "Tentar novamente?(1 - sim 0 - não)" << endl;
                 cin >> op;
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 if (op == 1){
                     mudarAtributosUser(user);
                 }
@@ -232,12 +299,12 @@ admin createAdmin(){
         }
     }
 
-    void retirarExemplar(livro &book){
+    void retirarExemplar(Livro &book){
         book.deletarExemplar();
     }
 
-    void checarMulta(vector<chamada> &chamadas, usuario &user){
-        float multa = user.getMulta(chamadas);
+    void checarMulta(vector<Chamada> &Chamadas, Usuario &user){
+        float multa = user.getMulta(Chamadas);
         if (multa == 0){
             cout << "Não há multas a serem pagas." << endl;
         }else{
@@ -245,29 +312,30 @@ admin createAdmin(){
         }
     }
 
-    void userActions(vector<usuario> &usuarios, vector<livro> &livros, vector<chamada> &chamadas){
+    void userActions(vector<Usuario> &Usuarios, vector<Livro> &Livros, vector<Chamada> &Chamadas){
         int op;
-        int userIndex = loginUser(usuarios);
+        int userIndex = loginUser(Usuarios);
         bool running = true;
         while(running){
-            cout << "1 - Devolver livro" << endl;
+            cout << "1 - Devolver Livro" << endl;
             cout << "2 - Pagar multa" << endl;
             cout << "3 - Checar multa" << endl;
             cout << "4 - Mudar atributos" << endl;
             cout << "5 - Sair" << endl;
             cin >> op;
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
             switch (op){
                 case 1:
-                    devolucao(usuarios[userIndex], livros, chamadas);
+                    devolucao(Usuarios[userIndex], Livros, Chamadas);
                     break;
                 case 2:
-                    pagamento(usuarios[userIndex], chamadas);
+                    pagamento(Usuarios[userIndex], Chamadas);
                     break;
                 case 3:
-                    checarMulta(chamadas, usuarios[userIndex]);
+                    checarMulta(Chamadas, Usuarios[userIndex]);
                     break;
                 case 4:
-                    mudarAtributosUser(usuarios[userIndex]);
+                    mudarAtributosUser(Usuarios[userIndex]);
                     break;
                 case 5:
                     running = false;

@@ -1,15 +1,13 @@
-#ifndef CHAMADA_HPP
-#define CHAMADA_HPP
 
 #include <iostream>
 #include <vector>
 
 using namespace std;
 
-class chamada{
+class Chamada{
     public:
         
-        chamada(int _dtaEmprestimo[3], int _idLivro, int _idUsuario);
+        Chamada(int _dtaEmprestimo[3], int _idLivro, int _idUsuario);
 
         int* getDtaVenc();
 
@@ -31,7 +29,7 @@ class chamada{
 
         int getId();
 
-        void setId(vector<chamada> &chamadas);
+        void setId(vector<Chamada> &Chamadas);
 
     private:
         int dtaVenc[3];

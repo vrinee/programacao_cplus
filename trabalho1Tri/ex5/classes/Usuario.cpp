@@ -1,13 +1,14 @@
 #include <iostream>
 #include <vector>
-#include "chamada.hpp"
-#include "livro.hpp"
-#include "usuario.hpp"
+#include <string>
+#include "Chamada.hpp"
+#include "Livro.hpp"
+#include "Usuario.hpp"
 #include "classFunc.hpp"
 
 using namespace std;
 
-usuario::usuario(string _nome, string _senha, int _dtaNascimento[3], string _email, string _telefone)
+Usuario::Usuario(string _nome, string _senha, int _dtaNascimento[3], string _email, string _telefone)
 {
     nome = _nome;
     senha = _senha;
@@ -20,66 +21,66 @@ usuario::usuario(string _nome, string _senha, int _dtaNascimento[3], string _ema
     status = true;
 }
 
-void usuario::setNome(string _nome)
+void Usuario::setNome(string _nome)
 {
     nome = _nome;
 }
 
-string usuario::getSenha()
+string Usuario::getSenha()
 {
     return senha;
 }
 
-void usuario::setSenha(string _senha)
+void Usuario::setSenha(string _senha)
 {
     senha = _senha;
 }
 
-int* usuario::getDtaNascimento()
+int* Usuario::getDtaNascimento()
 {
     return dtaNascimento;
 }
 
-void usuario::setDtaNascimento(int _dtaNascimento[3])
+void Usuario::setDtaNascimento(int _dtaNascimento[3])
 {
     dtaNascimento[0] = _dtaNascimento[0];
     dtaNascimento[1] = _dtaNascimento[1];
     dtaNascimento[2] = _dtaNascimento[2];
 }
 
-string usuario::getEmail()
+string Usuario::getEmail()
 {
     return email;
 }
 
-void usuario::setEmail(string _email)
+void Usuario::setEmail(string _email)
 {
     email = _email;
 }
 
-string usuario::getTelefone()
+string Usuario::getTelefone()
 {
     return telefone;
 }
 
-void usuario::setTelefone(string _telefone)
+void Usuario::setTelefone(string _telefone)
 {
     telefone = _telefone;
 }
 
-float usuario::getMulta(vector<chamada> &chamadas)
+float Usuario::getMulta(vector<Chamada> &Chamadas)
 {
-    checarMulta(chamadas);
+    checarMulta(Chamadas);
     return multa;
 }
 
-bool usuario::getStatus()
+bool Usuario::getStatus()
 {
-    usuario::checarStatus();
+    Usuario::checarStatus();
     return status;
 }
 
-void usuario::checarStatus()
+void Usuario::checarStatus()
 {
     if (multa > 50)
     {
@@ -91,33 +92,33 @@ void usuario::checarStatus()
     }
 }
 
-void usuario::setId(vector<usuario> &usuarios)
+void Usuario::setId(vector<Usuario> &Usuarios)
 {
-    for (int i = 0; i < usuarios.size(); i++)
+    for (int i = 0; i < Usuarios.size(); i++)
     {
-        if (usuarios.at(i).getEmail() == email)
+        if (Usuarios.at(i).getEmail() == email)
         {
             id = i;
         }
     }
 }
 
-int usuario::getId()
+int Usuario::getId()
 {
     return id;
 }
 
-int usuario::getEmprestimos()
+int Usuario::getEmprestimos()
 {
     return emprestimos;
 }
 
-void usuario::addEmprestimo()
+void Usuario::addEmprestimo()
 {
     emprestimos++;
 }
 
-void usuario::checarMulta(vector<chamada> &chamadas)
+void Usuario::checarMulta(vector<Chamada> &Chamadas)
 {
     int dtaAtual[3];
     int timesRan = 0;
@@ -129,18 +130,18 @@ void usuario::checarMulta(vector<chamada> &chamadas)
     cin >> dtaAtual[2];
     while (timesRan < emprestimos)
     {
-        for (int i = 0; i < chamadas.size(); i++)
+        for (int i = 0; i < Chamadas.size(); i++)
         {
-            if (chamadas.at(i).getIdUsuario() == id)
+            if (Chamadas.at(i).getIdUsuario() == id)
             {
-                if (chamadas.at(i).getAtrasado())
+                if (Chamadas.at(i).getAtrasado())
                 {
-                    int dias = diasAte(chamadas.at(i).getDtaVenc(), dtaAtual);
+                    int dias = diasAte(Chamadas.at(i).getDtaVenc(), dtaAtual);
 
                     if (dias > 0)
                     {
                         multa += dias * 2;
-                        chamadas.at(i).setAtrasado();
+                        Chamadas.at(i).setAtrasado();
                     }
                 }
                 timesRan++;
@@ -149,13 +150,13 @@ void usuario::checarMulta(vector<chamada> &chamadas)
     }
 }
 
-void usuario::pagarMulta(float valor, vector<chamada> &chamadas)
+void Usuario::pagarMulta(float valor, vector<Chamada> &Chamadas)
 {
-    checarMulta(chamadas);
+    checarMulta(Chamadas);
     multa -= valor;
 }
 
-void usuario::devolverLivro(vector<chamada> &chamadas, vector<livro> &livros)
+void Usuario::devolverLivro(vector<Chamada> &Chamadas, vector<Livro> &Livros)
 {
     string titulo;
     int diaAtual[3];
@@ -167,11 +168,12 @@ void usuario::devolverLivro(vector<chamada> &chamadas, vector<livro> &livros)
     cin >> diaAtual[1];
     cout << "Digite o ano atual: ";
     cin >> diaAtual[2];
-    cout << "Digite o titulo do livro que deseja devolver: ";
-    cin >> titulo;
-    for (int i = 0; i < livros.size(); i++)
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cout << "Digite o titulo do Livro que deseja devolver: ";
+    getline(cin, titulo);
+    for (int i = 0; i < Livros.size(); i++)
     {
-        if (livros.at(i).titulo == titulo)
+        if (Livros.at(i).titulo == titulo)
         {
             idLivro = i;
             break;
@@ -180,24 +182,25 @@ void usuario::devolverLivro(vector<chamada> &chamadas, vector<livro> &livros)
     cout << "Livro nao encontrado!" << endl;
     cout << "Tentar novamente?(1 - sim 0 - nao)" << endl;
     cin >> op;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     if (op == 1)
     {
-        devolverLivro(chamadas, livros);
+        devolverLivro(Chamadas, Livros);
         return;
     }
 
-    for (int i = 0; i < chamadas.size(); i++)
+    for (int i = 0; i < Chamadas.size(); i++)
     {
-        if (chamadas.at(i).getIdUsuario() == id and chamadas.at(i).getIdLivro() == idLivro)
+        if (Chamadas.at(i).getIdUsuario() == id and Chamadas.at(i).getIdLivro() == idLivro)
         {
-            chamadas.at(i).setStatus();
-            int dias = diasAte(chamadas.at(i).getDtaVenc(), diaAtual);
-            if (dias > 0 and chamadas.at(i).getAtrasado() == false)
+            Chamadas.at(i).setStatus();
+            int dias = diasAte(Chamadas.at(i).getDtaVenc(), diaAtual);
+            if (dias > 0 and Chamadas.at(i).getAtrasado() == false)
             {
                 multa += dias * 2;
-                chamadas.at(i).setAtrasado();
+                Chamadas.at(i).setAtrasado();
             }
-            livros.at(idLivro).novoExemplar();
+            Livros.at(idLivro).novoExemplar();
             cout << "Livro devolvido com sucesso!" << endl;
             return;
         }

@@ -1,18 +1,18 @@
-#ifndef USUARIO_HPP
-#define USUARIO_HPP
 
 #include <iostream>
 #include <vector>
-#include "chamada.hpp"
-#include "livro.hpp"
+
 
 using namespace std;
 
-class usuario{
+class Chamada;
+class Livro;
+
+class Usuario{
     public:
         string nome;
         
-        usuario(string _nome, string _senha, int _dtaNascimento[3], string _email, string _telefone);
+        Usuario(string _nome, string _senha, int _dtaNascimento[3], string _email, string _telefone);
 
         void setNome(string _nome);
 
@@ -32,13 +32,13 @@ class usuario{
 
         void setTelefone(string _telefone);
 
-        float getMulta(vector<chamada> &chamadas);
+        float getMulta(vector<Chamada> &Chamadas);
 
         bool getStatus();
 
         void checarStatus();
 
-        void setId(vector<usuario> &usuarios);
+        void setId(vector<Usuario> &Usuarios);
 
         int getId();
 
@@ -46,10 +46,10 @@ class usuario{
 
         void addEmprestimo();
 
-        void checarMulta(vector<chamada> &chamadas);
+        void checarMulta(vector<Chamada> &Chamadas);
 
-        void pagarMulta(float valor, vector<chamada> &chamadas);
-        void devolverLivro(vector<chamada> &chamadas, vector<livro> &livros);
+        void pagarMulta(float valor, vector<Chamada> &Chamadas);
+        void devolverLivro(vector<Chamada> &Chamadas, vector<Livro> &Livros);
 
     private:
         string senha;
@@ -63,4 +63,3 @@ class usuario{
 
 };
 
-#endif
