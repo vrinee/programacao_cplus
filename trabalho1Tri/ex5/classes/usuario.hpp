@@ -1,3 +1,6 @@
+#ifndef USUARIO_HPP
+#define USUARIO_HPP
+
 #include <iostream>
 #include <vector>
 #include "chamada.hpp"
@@ -59,3 +62,5 @@ class usuario{
         int emprestimos = 0;
 
 };
+
+#endif

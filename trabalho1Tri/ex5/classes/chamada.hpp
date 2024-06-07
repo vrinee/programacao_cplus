@@ -1,3 +1,6 @@
+#ifndef CHAMADA_HPP
+#define CHAMADA_HPP
+
 #include <iostream>
 #include <vector>
 

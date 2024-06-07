@@ -1,3 +1,6 @@
+#ifndef LIVRO_HPP
+#define LIVRO_HPP
+
 #include <iostream>
 #include <vector>
 
@@ -35,3 +38,5 @@ class livro{
         int id;
 
 };
+
+#endif

@@ -1,6 +1,10 @@
 #include <iostream>
 #include <vector>
-#include <myClasses.cpp>
+#include "classes/admin.hpp"
+#include "classes/usuario.hpp"
+#include "classes/livro.hpp"
+#include "classes/chamada.hpp"
+#include "classes/classFunc.hpp"
 
 using namespace std;
 

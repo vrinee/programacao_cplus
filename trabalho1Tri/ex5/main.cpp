@@ -1,7 +1,11 @@
 #include <iostream>
 #include <vector>
-#include <myClasses.cpp>
-#include <interactUser.cpp>
+#include "classes/admin.hpp"
+#include "classes/usuario.hpp"
+#include "classes/livro.hpp"
+#include "classes/chamada.hpp"
+#include "classes/classFunc.hpp"
+#include "interactUser.hpp"
 
 
 using namespace std;
